@@ -13,7 +13,7 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Windows에서는 `.env.example`을 `.env.local`로 복사해도 됩니다. 현재 작업 환경에는 프로젝트 URL과 요청한 허용 이메일만 `.env.local`에 설정되어 있습니다. 공개 키는 현재 작업 환경에 입력되어 API 연결을 확인했습니다. 기존 `.env.local`을 덮어쓰지 마세요.
+Windows에서는 `.env.example`을 `.env.local`로 복사해도 됩니다. `.env.local`은 Git에 포함하지 않으므로 새 PC에서는 공개 키와 허용 이메일을 다시 설정해야 합니다. 기존 `.env.local`이 있다면 덮어쓰지 마세요.
 
 - [데모](http://localhost:3000/demo): 자격 증명 없이 샘플 데이터를 확인합니다. 실제 데이터 쓰기·연결 기능은 비활성화됩니다.
 - [로그인](http://localhost:3000/login): Supabase 설정 후 허용된 이메일의 OTP로 로그인합니다.
@@ -21,12 +21,12 @@ Windows에서는 `.env.example`을 `.env.local`로 복사해도 됩니다. 현�
 
 ## Supabase 연결
 
-프로젝트 ID: `hykgvrbsvldrjdoxxlnl`. 2026-10-20에 실제 DB 마이그레이션·RLS·허용 이메일·공개 가입 차단·수집/기기 연결 함수 배포를 완료했습니다. Gmail SMTP, 한국어 OTP 메일, 소유자 계정 로그인과 실제 DB 조회를 확인했습니다. 수집 데이터가 없는 대시보드와 연결 상태도 정상 표시됩니다. 상세 상태와 CLI 이력 보정은 [백엔드 안내](docs/backend.md)를 참고하세요.
+프로젝트 ID: `mwwrnhhbippprmidgaus` (`hanshin-workout`). 2026-10-20에 사용자 요청으로 기존 프로젝트를 재개하고 health-web 대상으로 전환했습니다. 앱 테이블 10개와 RLS를 적용했습니다. 새 프로젝트에서도 공개 가입 차단·초대 수락·한국어 OTP 발송·실제 로그인을 확인했습니다. 현재는 Supabase 기본 메일 발송을 사용하며, 이전 프로젝트의 Gmail SMTP 설정은 이전하지 않았습니다. 현재 배포 및 인증 설정 상태는 [백엔드 안내](docs/backend.md)를 참고하세요.
 
 1. 기존 테이블과 마이그레이션 이력을 확인합니다. 같은 이름의 객체가 있으면 적용 전에 조정합니다. 로컬 테스트 외에 `db reset`을 사용하지 않습니다.
 2. Supabase CLI로 프로젝트를 연결하고 `supabase/migrations`의 추가 마이그레이션을 적용합니다. 자세한 명령과 함수 설정은 [백엔드 안내](docs/backend.md)를 참고하세요.
 3. Supabase Auth에서 본인 이메일을 초대하고, 받은 메일의 초대 수락으로 최초 이메일 인증을 완료합니다. 공개 가입은 비활성화합니다. 미인증 초대 계정은 OTP 요청에서 `signup_disabled` 오류가 발생하므로 초대 수락을 먼저 완료해야 합니다. `public.allowed_emails`에 같은 이메일을 소문자로 등록합니다. 웹의 `ALLOWED_EMAILS`와 DB의 허용 목록을 모두 설정해야 합니다.
-4. 이 Free 프로젝트에서는 템플릿 편집을 위해 Authentication → Emails → SMTP Settings에서 메일 발송 서버를 먼저 설정해야 합니다. 그 다음 Auth → Email Templates → Magic Link 템플릿에 `{{ .Token }}`을 포함해 인증 코드를 받도록 설정합니다. 웹은 링크 콜백 대신 OTP 입력을 사용하며 새 계정을 자동 생성하지 않습니다.
+4. Authentication → Emails → Magic Link / OTP 템플릿에는 `{{ .Token }}`을 포함한 한국어 인증 코드 메일을 저장했습니다. 기본 메일 발송의 제한을 피하려면 SMTP Settings에서 별도 발송 서버를 설정합니다. 웹은 링크 콜백 대신 OTP 입력을 사용하며 새 계정을 자동 생성하지 않습니다.
 5. `.env.local`의 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`에 프로젝트 공개 키를 넣습니다. 서버 전용 `ALLOWED_EMAILS`에는 허용 이메일을 쉼표로 구분해 입력합니다.
 6. Edge Functions와 Oura 비밀값, 시간별 수집 예약을 설정합니다. 서비스 역할 키와 Oura Secret/암호화 키를 `NEXT_PUBLIC_*` 변수에 넣지 않습니다.
 
@@ -63,7 +63,7 @@ Android 변경과 검증 명령은 인접 `healthTask` 저장소의 `docs/CLOUD_
 
 1. Vercel에 이 GitHub 저장소를 연결하고 Next.js 프레임워크, Node.js 24, `pnpm build`를 사용합니다.
 2. `.env.example`의 환경 변수를 Vercel에도 설정합니다. `NEXT_PUBLIC_APP_URL`에는 실제 HTTPS 배포 주소를 사용합니다. 프리뷰 배포는 개인 건강 데이터용 운영 프로젝트와 연결하지 않는 것을 기본으로 합니다.
-3. Supabase Auth Site URL을 실제 주소로, Edge Secret `WEB_ORIGIN`도 같은 origin으로 설정합니다. Oura 개발자 앱에는 `https://hykgvrbsvldrjdoxxlnl.supabase.co/functions/v1/oura-connect`를 정확히 등록합니다.
+3. Supabase Auth Site URL을 실제 주소로, Edge Secret `WEB_ORIGIN`도 같은 origin으로 설정합니다. Oura 개발자 앱에는 `https://mwwrnhhbippprmidgaus.supabase.co/functions/v1/oura-connect`를 정확히 등록합니다.
 4. 배포 후 OTP·Oura 연결·기기 업로드·권한 폐기·재전송을 실제 계정으로 확인합니다. 정기 수집은 `supabase/schedule.sql` 적용 후 동작합니다.
 
-현재 Supabase DB와 수집/기기 연결 함수는 배포되었고 SMTP·OTP 로그인과 실제 DB 조회를 확인했습니다. 실제 Android 기기 연결·건강 기록 업로드, Oura 함수·자격 증명·정기 수집, Vercel 배포는 남아 있습니다.
+Vercel 첫 배포를 완료했습니다: [샘플 대시보드](https://health-web-rose.vercel.app/demo), [로그인](https://health-web-rose.vercel.app/login). 새 Supabase 프로젝트의 초대 수락·한국어 OTP 발송·운영 웹 실제 로그인과 빈 데이터 조회까지 확인했습니다. Android 실기기 업로드, Oura 자격 증명·동의·정기 수집, 운영용 SMTP 설정은 남아 있습니다.
