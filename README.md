@@ -66,4 +66,4 @@ Android 변경과 검증 명령은 인접 `healthTask` 저장소의 `docs/CLOUD_
 3. Supabase Auth Site URL을 실제 주소로, Edge Secret `WEB_ORIGIN`도 같은 origin으로 설정합니다. Oura 개발자 앱에는 `https://mwwrnhhbippprmidgaus.supabase.co/functions/v1/oura-connect`를 정확히 등록합니다.
 4. 배포 후 OTP·Oura 연결·기기 업로드·권한 폐기·재전송을 실제 계정으로 확인합니다. 정기 수집은 `supabase/schedule.sql` 적용 후 동작합니다.
 
-Vercel 첫 배포를 완료했습니다: [샘플 대시보드](https://health-web-rose.vercel.app/demo), [로그인](https://health-web-rose.vercel.app/login). 새 Supabase 프로젝트의 초대 수락·한국어 OTP 발송·운영 웹 실제 로그인과 빈 데이터 조회까지 확인했습니다. Android 실기기 업로드, Oura 자격 증명·동의·정기 수집, 운영용 SMTP 설정은 남아 있습니다.
+Vercel 배포를 완료했습니다: [샘플 대시보드](https://health-web-rose.vercel.app/demo), [로그인](https://health-web-rose.vercel.app/login). 새 Supabase 프로젝트의 초대 수락·한국어 OTP 발송·운영 웹 실제 로그인을 확인했습니다. Oura 앱 등록·서버 비밀값·실제 동의와 최초 수집을 완료했고, 대시보드에서 연결됨·동기화 완료·기록 1건을 확인했습니다. 매시 15분 수집 예약이 활성화돼 있으며 Vault → pg_net → Edge Function 호출도 HTTP 200으로 확인했습니다. 연결 후 예약 인증 방식의 재수집도 계정 1개·실패 0개로 완료됐습니다. Android 실기기 업로드 검증은 다른 PC에서 진행해야 합니다. 메일은 현재 Supabase 기본 발송을 사용하며 별도 SMTP는 선택 사항입니다.
