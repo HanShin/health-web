@@ -93,6 +93,7 @@ export function Dashboard({
     [busy, setBusy] = useState(''),
     [message, setMessage] = useState(initialMessage ?? ''),
     [pair, setPair] = useState<{ code: string; expiresAt: string } | null>(null),
+    [ouraAuthorization, setOuraAuthorization] = useState(''),
     [bodyMetric, setBodyMetric] = useState('WEIGHT_KG');
   const selected = useMemo(
     () => filterPeriod(records, days).filter((r) => source === 'all' || sourceGroup(r) === source),
@@ -111,6 +112,7 @@ export function Dashboard({
   async function action(name: string, body: Record<string, unknown> = {}) {
     setBusy(name);
     setMessage('');
+    if (name === 'oura') setOuraAuthorization('');
     try {
       const response = await fetch(`/api/connect/${name}`, {
         method: 'POST',
@@ -119,7 +121,7 @@ export function Dashboard({
       });
       const result = await response.json();
       if (!response.ok) throw Error(result.error ?? '요청을 처리하지 못했습니다.');
-      if (result.url) window.location.assign(result.url);
+      if (typeof result.url === 'string') setOuraAuthorization(result.url);
       else if (result.code) setPair(result);
       else {
         setMessage('요청이 완료되었습니다. 새로고침하면 최신 상태를 확인할 수 있습니다.');
@@ -849,6 +851,55 @@ export function Dashboard({
                   );
                 })}
               </section>
+              {ouraAuthorization && (
+                <section className="panel pairing" aria-label="Oura 연결 계속하기">
+                  <div>
+                    <h2>Oura에서 연결을 승인해 주세요</h2>
+                    <p>
+                      인증 페이지를 열어 수면·활동·심박 기록 연결에 동의해 주세요. 이 브라우저에서
+                      로그인이 어려우면 연결 주소를 복사해 평소 사용하는 브라우저에서 열 수 있어요.
+                    </p>
+                    <div className="connection-actions">
+                      <a
+                        className="button secondary"
+                        href={ouraAuthorization}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        referrerPolicy="no-referrer"
+                      >
+                        Oura 인증 페이지 열기 <ArrowUpRight size={15} />
+                      </a>
+                      <button
+                        className="button secondary"
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(ouraAuthorization);
+                            setMessage(
+                              'Oura 연결 주소를 복사했습니다. 다른 브라우저에서 열어 주세요.',
+                            );
+                          } catch {
+                            setMessage(
+                              '인증 페이지 링크를 길게 누르거나 우클릭해 주소를 복사해 주세요.',
+                            );
+                          }
+                        }}
+                      >
+                        연결 주소 복사
+                      </button>
+                    </div>
+                    <small>
+                      주소는 10분간 유효해요. 연결을 완료한 뒤 이 화면을 새로고침해 주세요.
+                    </small>
+                  </div>
+                  <button
+                    className="icon-button"
+                    aria-label="Oura 연결 안내 닫기"
+                    onClick={() => setOuraAuthorization('')}
+                  >
+                    <X />
+                  </button>
+                </section>
+              )}
               {pair && (
                 <section className="panel pairing" role="status">
                   <div>
