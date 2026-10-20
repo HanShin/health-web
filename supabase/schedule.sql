@@ -7,6 +7,8 @@ select cron.schedule('health-oura-hourly','15 * * * *',$$
  select net.http_post(
    url := (select decrypted_secret from vault.decrypted_secrets where name='health_project_url') || '/functions/v1/oura-sync',
    headers := jsonb_build_object('Content-Type','application/json','x-cron-secret',(select decrypted_secret from vault.decrypted_secrets where name='health_cron_secret')),
-   body := '{}'::jsonb
+   body := '{}'::jsonb,
+   -- Allow time for a cold Edge worker and upstream Oura requests.
+   timeout_milliseconds := 60000
  );
 $$);
