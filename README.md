@@ -16,7 +16,7 @@ pnpm dev
 Windows에서는 `.env.example`을 `.env.local`로 복사해도 됩니다. `.env.local`은 Git에 포함하지 않으므로 새 PC에서는 공개 키와 허용 이메일을 다시 설정해야 합니다. 기존 `.env.local`이 있다면 덮어쓰지 마세요.
 
 - [데모](http://localhost:3000/demo): 자격 증명 없이 샘플 데이터를 확인합니다. 실제 데이터 쓰기·연결 기능은 비활성화됩니다.
-- [로그인](http://localhost:3000/login): Supabase 설정 후 허용된 이메일의 OTP로 로그인합니다.
+- [로그인](http://localhost:3000/login): 허용된 Google 계정 또는 이메일 OTP로 로그인합니다. Google 공급자 설정 전에는 이메일 OTP를 사용합니다. 이미 로그인했다면 대시보드로 이동합니다.
 - `/`: 로그인한 사용자의 실제 데이터만 표시합니다. 연결 실패·빈 데이터에 샘플을 대신 표시하지 않습니다.
 
 ## Supabase 연결
@@ -31,6 +31,14 @@ Windows에서는 `.env.example`을 `.env.local`로 복사해도 됩니다. `.env
 6. Edge Functions와 Oura 비밀값, 시간별 수집 예약을 설정합니다. 서비스 역할 키와 Oura Secret/암호화 키를 `NEXT_PUBLIC_*` 변수에 넣지 않습니다.
 
 로그인 후 **연결 · 설정 → 기기 연결 코드 발급**을 누르고, 업데이트한 오늘러닝 앱의 **설정 → health-web 클라우드 연결**에 코드를 붙여넣습니다. 코드만으로 연결하며 앱에서 Supabase 키를 입력할 필요가 없습니다.
+
+### Google 로그인
+
+Google Cloud의 웹 OAuth 클라이언트에는 승인된 JavaScript 출처로 `https://health-web-rose.vercel.app`, 리디렉션 URI로 `https://mwwrnhhbippprmidgaus.supabase.co/auth/v1/callback`을 등록합니다. 클라이언트 ID와 Secret은 Supabase Auth의 Google 공급자에 저장합니다. 웹의 공개 환경 변수에 Secret을 넣지 않습니다. Google 권한은 기본 `openid`, 이메일과 프로필만 사용합니다.
+
+Supabase Auth의 허용된 리디렉션 주소에는 `https://health-web-rose.vercel.app/auth/callback`을 추가합니다. 이 주소는 Google Cloud에 등록하는 Supabase 콜백과 서로 다릅니다. 웹은 PKCE 코드 교환 후 확인된 이메일을 허용 목록과 다시 검사하며, 다른 계정의 로컬 로그인 세션은 해제합니다. 공개 가입은 계속 차단합니다.
+
+로그인 흐름은 같은 브라우저에서 끝내야 합니다. 내장 브라우저에서 Google 로그인이 제한되면 Firefox·Chrome·휴대폰 브라우저에서 사이트의 `/login`을 열고 로그인 버튼을 누릅니다. 같은 브라우저에 유효한 세션이 남아 있다면 코드를 다시 입력하지 않아도 됩니다.
 
 ## 데이터 연결
 

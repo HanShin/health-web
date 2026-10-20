@@ -1,13 +1,26 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-export function LoginForm() {
+export function LoginForm({ initialMessage = '' }: { initialMessage?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState(''),
     [token, setToken] = useState(''),
     [sent, setSent] = useState(false),
     [busy, setBusy] = useState(false),
-    [message, setMessage] = useState('');
+    [message, setMessage] = useState(initialMessage);
+  async function google() {
+    setBusy(true);
+    setMessage('');
+    try {
+      const response = await fetch('/api/auth/google', { method: 'POST' });
+      const result = await response.json();
+      if (!response.ok || !result.url) throw Error(result.error || 'Google 로그인 실패');
+      window.location.assign(result.url);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Google 로그인 실패');
+      setBusy(false);
+    }
+  }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -35,6 +48,10 @@ export function LoginForm() {
   }
   return (
     <form onSubmit={submit} className="auth-form">
+      <button type="button" className="google-login" disabled={busy} onClick={google}>
+        Google 계정으로 로그인 <span aria-hidden="true">→</span>
+      </button>
+      <div className="auth-divider">또는 이메일 코드로 로그인</div>
       <label>
         이메일
         <input

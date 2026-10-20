@@ -1,7 +1,28 @@
 import Link from 'next/link';
-import { configured } from '@/lib/config';
+import { redirect } from 'next/navigation';
+import { configured, isAllowed } from '@/lib/config';
+import { supabase } from '@/lib/supabase/server';
 import { LoginForm } from '@/components/login-form';
-export default function Login() {
+export const dynamic = 'force-dynamic';
+export default async function Login({
+  searchParams,
+}: {
+  searchParams: Promise<{ auth?: string }>;
+}) {
+  if (configured) {
+    const db = await supabase();
+    const {
+      data: { user },
+    } = await db.auth.getUser();
+    if (user && isAllowed(user.email)) redirect('/');
+  }
+  const { auth } = await searchParams;
+  const message =
+    auth === 'not-allowed'
+      ? '허용된 이메일의 Google 계정으로 로그인해 주세요.'
+      : auth === 'google-failed'
+        ? 'Google 로그인을 완료하지 못했습니다. 로그인을 시작한 브라우저에서 다시 시도해 주세요.'
+        : '';
   return (
     <main className="login">
       <div className="auth-card">
@@ -20,7 +41,7 @@ export default function Login() {
           흩어진 기록을 한 곳에서 이어 보세요.
         </p>
         {configured ? (
-          <LoginForm />
+          <LoginForm initialMessage={message} />
         ) : (
           <div className="notice">
             Supabase 연결 설정이 필요합니다. .env.example을 참고해 공개 키와 허용 이메일을

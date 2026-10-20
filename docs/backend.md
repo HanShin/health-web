@@ -12,6 +12,14 @@ Vercel: [production website](https://health-web-rose.vercel.app), [project](http
 
 The initial migration was applied through the Dashboard; Supabase CLI migration history was not initialized. Before any future db push, verify the applied schema and run `supabase migration repair 202610200001 --status applied` against the correctly linked project. Do not replay the table-creation migration.
 
+## Google login
+
+The web supports Google OAuth alongside email OTP. `/login` checks the server-verified user and owner allowlist, redirecting existing sessions to the dashboard. Google initiation is a same-origin POST to `/api/auth/google`; it checks the public provider settings and offers the email fallback if Google is unavailable. A PKCE verifier is stored in the browser cookies. `/auth/callback` exchanges the one-time code, requires a confirmed allowlisted email, and clears only the rejected local session. Redirect origins come exclusively from `NEXT_PUBLIC_APP_URL`; arbitrary request hosts and `next` query values are not used. Start and finish login in the same browser.
+
+Configure the Google Cloud web client with origin `https://health-web-rose.vercel.app` and redirect `https://mwwrnhhbippprmidgaus.supabase.co/auth/v1/callback`. Save the client ID/Secret in the Supabase Google provider, and add `https://health-web-rose.vercel.app/auth/callback` to Supabase's redirect allowlist. Only the basic OpenID/email/profile scopes are needed. Existing verified email identities can link automatically to the same user; confirm that actual Google sign-in retains the existing owner and records. Public signup remains disabled. Google provider setup and live sign-in are in progress as of this change.
+
+Local checks passed: nine unit/database tests, lint, TypeScript and production compilation. HTTP checks verified the anonymous login page, foreign-origin rejection (403), missing-code callback with a fixed redirect, GET initiation rejection (405), and a safe email fallback while the provider is disabled (503).
+
 ## Setup
 
 1. Install Supabase CLI and Deno. Run `supabase start` for a disposable local database. Run `supabase db reset` locally, never on the remote production database.
