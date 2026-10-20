@@ -1,0 +1,10 @@
+project_id = "hykgvrbsvldrjdoxxlnl"
+
+[functions.health-ingest]
+verify_jwt = false
+[functions.device-pair]
+verify_jwt = false
+[functions.oura-connect]
+verify_jwt = false
+[functions.oura-sync]
+verify_jwt = false

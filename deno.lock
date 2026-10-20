@@ -1,0 +1,31 @@
+{
+  "version": "5",
+  "remote": {
+    "https://esm.sh/@supabase/supabase-js@2.57.4": "05a369085eb4a4c99d85ccece97f0cf1e05357122e0e74373da1f0e91b014902"
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@electric-sql/pglite@0.5.10",
+        "npm:@supabase/ssr@0.12.7",
+        "npm:@supabase/supabase-js@2.118.0",
+        "npm:@tailwindcss/postcss@4.3.3",
+        "npm:@types/node@26.6.5",
+        "npm:@types/react-dom@19.3.0",
+        "npm:@types/react@19.3.0",
+        "npm:eslint-config-next@16.4.2",
+        "npm:eslint@9.39.5",
+        "npm:lucide-react@1.59.0",
+        "npm:next@16.4.2",
+        "npm:prettier@3.9.10",
+        "npm:react-dom@19.3.1",
+        "npm:react@19.3.1",
+        "npm:recharts@3.10.1",
+        "npm:tailwindcss@4.3.3",
+        "npm:tsx@4.23.15",
+        "npm:typescript@6.0.3",
+        "npm:zod@4.6.7"
+      ]
+    }
+  }
+}
