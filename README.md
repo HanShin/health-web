@@ -57,7 +57,7 @@ pnpm build
 
 `pnpm test`는 PostgreSQL WASM 엔진(PGlite)에서 실제 마이그레이션/RLS/배치 트랜잭션을 실행하고, 단위·누락 값·중복 집계·JSON 가져오기·대용량 원본 분할을 검증합니다. Supabase의 Auth/게이트웨이 동작을 대체하지는 않습니다. Edge 테스트는 [백엔드 안내](docs/backend.md)를 따릅니다.
 
-Android 변경과 검증 명령은 인접 `healthTask` 저장소의 `docs/CLOUD_SYNC.md`에 있습니다. 이 PC의 Android 개발 도구는 정리한 상태를 유지합니다. [GitHub 원격 검증](https://github.com/HanShin/healthTask/actions/runs/39391534589)에서 단위 테스트 69개·린트·debug APK 빌드를 통과했습니다. 기존 서명 키로 만드는 업데이트 APK와 실기기 검증은 다른 PC에서 진행합니다.
+Android 변경과 검증 명령은 인접 `healthTask` 저장소의 `docs/CLOUD_SYNC.md`에 있습니다. [GitHub 원격 검증](https://github.com/HanShin/healthTask/actions/runs/39392953709)에서 단위 테스트 69개·린트·debug/release APK 빌드를 통과했습니다. 이 PC에 남아 있던 기존 릴리스 키와 서명 도구로 release APK를 서명했습니다. 실제 휴대폰의 기존 앱과 서명이 일치함을 확인하고 삭제 없이 업데이트했으며, 설치된 APK 해시도 서명본과 일치합니다. 기존 최초 설치일은 유지됐습니다. 앱의 코드 연결과 실제 업로드는 별도 확인합니다.
 
 ## Vercel 배포
 
@@ -66,4 +66,4 @@ Android 변경과 검증 명령은 인접 `healthTask` 저장소의 `docs/CLOUD_
 3. Supabase Auth Site URL을 실제 주소로, Edge Secret `WEB_ORIGIN`도 같은 origin으로 설정합니다. Oura 개발자 앱에는 `https://mwwrnhhbippprmidgaus.supabase.co/functions/v1/oura-connect`를 정확히 등록합니다.
 4. 배포 후 OTP·Oura 연결·기기 업로드·권한 폐기·재전송을 실제 계정으로 확인합니다. 정기 수집은 `supabase/schedule.sql` 적용 후 동작합니다.
 
-Vercel 배포를 완료했습니다: [샘플 대시보드](https://health-web-rose.vercel.app/demo), [로그인](https://health-web-rose.vercel.app/login). 새 Supabase 프로젝트의 초대 수락·한국어 OTP 발송·운영 웹 실제 로그인을 확인했습니다. Oura 앱 등록·서버 비밀값·실제 동의와 최초 수집을 완료했고, 대시보드에서 연결됨·동기화 완료·기록 1건을 확인했습니다. 매시 15분 수집 예약이 활성화돼 있으며 17:15(한국 시간)의 자동 실행과 수집 완료도 확인했습니다. 예약 HTTP 대기 시간은 60초로 명시했고, 적용 후 Vault → pg_net → Edge Function 호출은 HTTP 200·계정 1개·실패 0개로 완료됐습니다. Android 실기기 업로드 검증은 다른 PC에서 진행해야 합니다. 메일은 현재 Supabase 기본 발송을 사용하며 별도 SMTP는 선택 사항입니다.
+Vercel 배포를 완료했습니다: [샘플 대시보드](https://health-web-rose.vercel.app/demo), [로그인](https://health-web-rose.vercel.app/login). 새 Supabase 프로젝트의 초대 수락·한국어 OTP 발송·운영 웹 실제 로그인을 확인했습니다. Oura 앱 등록·서버 비밀값·실제 동의와 최초 수집을 완료했고, 대시보드에서 연결됨·동기화 완료·기록 1건을 확인했습니다. 매시 15분 수집 예약이 활성화돼 있으며 17:15(한국 시간)의 자동 실행과 수집 완료도 확인했습니다. 예약 HTTP 대기 시간은 60초로 명시했고, 적용 후 Vault → pg_net → Edge Function 호출은 HTTP 200·계정 1개·실패 0개로 완료됐습니다. Android 실기기 업로드 검증은 기기 연결 후 진행해야 합니다. 메일은 현재 Supabase 기본 발송을 사용하며 별도 SMTP는 선택 사항입니다.
