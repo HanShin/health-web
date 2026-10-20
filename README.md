@@ -34,6 +34,8 @@ Windows에서는 `.env.example`을 `.env.local`로 복사해도 됩니다. `.env
 
 ### Google 로그인
 
+운영 사이트의 Google 로그인이 활성화되어 있습니다. 기존 이메일 계정과 같은 Google 계정으로 로그인하면 기존 기록과 기기 연결을 그대로 사용합니다.
+
 Google Cloud의 웹 OAuth 클라이언트에는 승인된 JavaScript 출처로 `https://health-web-rose.vercel.app`, 리디렉션 URI로 `https://mwwrnhhbippprmidgaus.supabase.co/auth/v1/callback`을 등록합니다. 클라이언트 ID와 Secret은 Supabase Auth의 Google 공급자에 저장합니다. 웹의 공개 환경 변수에 Secret을 넣지 않습니다. Google 권한은 기본 `openid`, 이메일과 프로필만 사용합니다.
 
 Supabase Auth의 허용된 리디렉션 주소에는 `https://health-web-rose.vercel.app/auth/callback`을 추가합니다. 이 주소는 Google Cloud에 등록하는 Supabase 콜백과 서로 다릅니다. 웹은 PKCE 코드 교환 후 확인된 이메일을 허용 목록과 다시 검사하며, 다른 계정의 로컬 로그인 세션은 해제합니다. 공개 가입은 계속 차단합니다.
