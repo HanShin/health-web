@@ -31,6 +31,10 @@ export default function Login() {
           샘플 데이터로 먼저 둘러보기 ↗
         </Link>
         <small>허용된 이메일로만 로그인할 수 있습니다.</small>
+        <nav className="login-notice-links" aria-label="서비스 안내">
+          <Link href="/privacy">개인정보 처리 안내</Link>
+          <Link href="/terms">서비스 이용 안내</Link>
+        </nav>
       </div>
       <div className="login-art">
         <span>하나의 흐름으로 보는</span>

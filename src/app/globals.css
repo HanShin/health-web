@@ -1,4 +1,53 @@
 @import 'tailwindcss';
+.service-notice {
+  max-width: 820px;
+  margin: 48px auto;
+  padding: 0 24px;
+}
+.service-notice-back {
+  display: inline-block;
+  margin-bottom: 28px;
+}
+.service-notice article {
+  padding: clamp(24px, 5vw, 48px);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+}
+.service-notice h1 {
+  margin-top: 12px;
+  font-size: clamp(24px, 4vw, 34px);
+  line-height: 1.4;
+}
+.service-notice-date {
+  margin-top: 12px;
+  color: var(--muted);
+}
+.service-notice section {
+  margin-top: 32px;
+}
+.service-notice section p {
+  margin-top: 12px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+.service-notice nav,
+.login-notice-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  font-size: 12px;
+}
+.service-notice nav {
+  margin-top: 24px;
+}
+.login-notice-links {
+  margin-top: 16px;
+}
+.service-notice a:hover,
+.login-notice-links a:hover {
+  text-decoration: underline;
+}
 :root {
   --ink: #272c27;
   --muted: #91968e;
